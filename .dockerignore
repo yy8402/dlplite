@@ -1,0 +1,10 @@
+*
+!Dockerfile
+!README.md
+!pyproject.toml
+!uv.lock
+!dlplite/
+!dlplite/*.py
+!dlplite/*.json
+!third_party/
+!third_party/betterleaks-LICENSE

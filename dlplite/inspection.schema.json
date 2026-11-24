@@ -1,0 +1,316 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "ContentInspectionRequest": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "1"
+        },
+        "inspection_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+        },
+        "binding_revision": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "policy_revision": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "gateway_policy_revision": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+        },
+        "channel": {
+          "enum": [
+            "reasoning.request",
+            "reasoning.response",
+            "candidate.release",
+            "caller.request",
+            "caller.response",
+            "delegation.request",
+            "delegation.response",
+            "tool.invoke",
+            "tool.result"
+          ]
+        },
+        "purpose": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+        },
+        "media_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "inspection_digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "content": {
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 32
+        }
+      },
+      "required": [
+        "version",
+        "inspection_id",
+        "binding_revision",
+        "policy_revision",
+        "gateway_policy_revision",
+        "channel",
+        "purpose",
+        "media_type",
+        "inspection_digest",
+        "content"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "channel": {
+                "const": "reasoning.request"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "propertyNames": {
+                  "enum": [
+                    "input"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "channel": {
+                "const": "reasoning.response"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "propertyNames": {
+                  "enum": [
+                    "deltas",
+                    "output"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "channel": {
+                "const": "candidate.release"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "propertyNames": {
+                  "enum": [
+                    "output",
+                    "text"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "channel": {
+                "const": "caller.request"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "propertyNames": {
+                  "enum": [
+                    "answer",
+                    "attachments",
+                    "dependencies",
+                    "input"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "channel": {
+                "const": "caller.response"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "propertyNames": {
+                  "enum": [
+                    "content",
+                    "question"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "channel": {
+                "const": "delegation.request"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "propertyNames": {
+                  "enum": [
+                    "attachments",
+                    "dependencies",
+                    "input"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "channel": {
+                "const": "delegation.response"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "propertyNames": {
+                  "enum": [
+                    "content",
+                    "output",
+                    "text"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "channel": {
+                "const": "tool.invoke"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "propertyNames": {
+                  "enum": [
+                    "arguments"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "channel": {
+                "const": "tool.result"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "propertyNames": {
+                  "enum": [
+                    "output"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ContentInspectionResponse": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "1"
+        },
+        "inspection_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+        },
+        "gateway_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+        },
+        "gateway_policy_revision": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+        },
+        "inspection_digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "verdict": {
+          "enum": [
+            "permit",
+            "hard_deny",
+            "indeterminate"
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+          },
+          "minItems": 0,
+          "maxItems": 16,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "version",
+        "inspection_id",
+        "gateway_id",
+        "gateway_policy_revision",
+        "inspection_digest",
+        "verdict",
+        "reason_codes"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

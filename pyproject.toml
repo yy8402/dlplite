@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dlplite"
+version = "0.1.0"
+description = "Local HTTPS inspection gateway with Presidio and Betterleaks"
+requires-python = ">=3.11"
+readme = "README.md"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "httpx>=0.28,<1",
+  "jsonschema>=4.26,<5",
+  "rfc8785>=0.1.4,<1",
+  "uvicorn>=0.34,<1",
+]
+
+[project.scripts]
+dlplite = "dlplite.server:main"
+dlplite-probe = "dlplite.probe:main"
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "pytest-asyncio>=1,<2", "ruff>=0.14,<1"]
+
+[tool.setuptools]
+packages = ["dlplite"]
+
+[tool.setuptools.package-data]
+dlplite = ["inspection.schema.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC"]
+ignore = ["E501"]
